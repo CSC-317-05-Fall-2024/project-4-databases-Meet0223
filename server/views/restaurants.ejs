@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants Page</title>
+    <link rel="icon" href="Images/icon.svg" type="image/svg">
+    <link rel="stylesheet" href="/Styles/Restaurants.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header id="header"></header>
+
+    <!-- Navigation Section -->
+    <nav id="navbar"></nav>
+
+    <!-- Main Content Section -->
+    <main>
+        <section class="restaurants-list">
+            <% restaurantData.forEach(restaurant => { %>
+                <div class="restaurant-card" data-id="<%= restaurant.id %>">
+                    <img src="<%= restaurant.photo %>" alt="Restaurant Photo">
+                    <div class="restaurant-info">
+                        <h2><%= restaurant.name %></h2>
+                        <p>Phone: <%= restaurant.phone %></p>
+                        <p>Address: <%= restaurant.address %></p>
+                        <button class="delete-btn">Delete</button> 
+                    </div>
+                </div>
+            <% }) %>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer id="footer"></footer>
+
+    <script src="scripts/header.js"></script>
+    <script>createHeader('Restaurants')</script>
+    <script src="/scripts/restaurantCards.js" type="module"></script>
+
+</body>
+</html>
