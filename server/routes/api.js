@@ -23,15 +23,20 @@ router.post('/restaurants', (req, res) => {
 });
 
 // DELETE a restaurant by ID
-router.delete('/restaurants/:id', (req, res) => {
+router.delete('/restaurants/:id', async (req, res) => {
     const restaurantId = req.params.id; 
     
-    const result = deleteRestaurant(restaurantId); 
-    
-    if (result.success) {
-        res.status(200).json(result); 
-    } else {
-        res.status(404).json(result); 
+    try {
+        const result = await deleteRestaurant(restaurantId);  
+
+        if (result.success) {
+            res.status(200).json({ message: 'Restaurant deleted successfully' });
+        } else {
+            res.status(404).json({ message: 'Restaurant not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting restaurant:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
 export { router as backendRouter };

@@ -55,13 +55,13 @@ html, body{
 }
 
 .restaurant-card {
-    width: 250px; /* Adjust the width as needed */
-    border: 1px solid #ccc;
-    padding: 0px;
-    text-align: center;
-    background-color: #e3d6d6;
-    margin: 50px;
-  }
+  width: calc(33.333% - 40px); 
+  border: 1px solid #ccc;
+  padding: 0px;
+  text-align: center;
+  background-color: #e3d6d6;
+  margin: 20px 0; 
+}
   
   .restaurant-card img {
     width: 100%;
@@ -107,6 +107,15 @@ html, body{
 #footer #AboutMe{
     color: #eadcbc;
     text-align: right;
+}
+
+.restaurants-list {
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: space-evenly;
+  gap: 20px; 
+  max-width: 1000px; 
+  margin: 0 auto; 
 }
 
 

@@ -1,87 +1,71 @@
 // Fill this in
-let restaurantData = [
-    {
-        "id": 0,
-        "name": "The Food Place",
-        "phone": "(415) 123-4567",
-        "address": "123 Main St, San Francisco, CA 94132",
-        "photo": "https://picsum.photos/150/150"
-    },
-    {
-        "id": 1,
-        "name": "Pizza Heaven",
-        "phone": "(415) 234-5678",
-        "address": "456 Elm St, San Francisco, CA 94132",
-        "photo": "https://picsum.photos/150/150"
-    },
-    {
-        "id": 2,
-        "name": "Sushi Express",
-        "phone": "(415) 345-6789",
-        "address": "789 Pine St, San Francisco, CA 94132",
-        "photo": "https://picsum.photos/150/150"
-    }
-];
-
-export default { restaurantData };
-
-let lastId = restaurantData.length - 1;
-
-const getNextId = () => {
-    lastId += 1;
-    return lastId;
-}
+import { pool } from '../config/database.js';
 
 // Get a list of restaurants
-const getRestaurants = () => {
-    return restaurantData;
-};
+const getRestaurants = async () => {
+    try {
+      const result = await pool.query('SELECT * FROM restaurants');
+      return result.rows;  // Return the list of restaurants
+    } catch (error) {
+      console.error('Error getting restaurants:', error);
+      throw new Error('Failed to retrieve restaurants');
+    }
+  };
 
 
 // Get a restaurant by id
-const getRestaurant = (id) => {
-    const restaurant = restaurantData.find(r => r.id === parseInt(id)); // Find restaurant by ID
-    return restaurant;
+const getRestaurant = async (id) => {
+  try {
+      const result = await pool.query('SELECT * FROM restaurants WHERE id = $1', [id]);
+      return result.rows[0]; // Return the restaurant if found, else undefined
+      
+  } catch (error) {
+      console.error('Error getting restaurant:', error);
+      throw new Error('Failed to retrieve restaurant');
+  }
 };
 
 // Create a new restaurant entry
-const createRestaurant = (newRestaurant) => {
-    
-    if (!newRestaurant || !newRestaurant.name) {
-        throw new Error("Invalid restaurant data: 'name' is required");
-    }
+const createRestaurant = async (newRestaurant) => {
+  try {
+      // Check if there are any rows in the table
+      const { rowCount } = await pool.query('SELECT 1 FROM restaurants LIMIT 1');
 
-    const id = getNextId(); 
-    const restaurant = {
-        id,                    
-        name: newRestaurant.name,
-        phone: newRestaurant.phone,
-        address: newRestaurant.address,
-        photo: newRestaurant.photo
-    };
+      // If no rows, reset the sequence
+      if (rowCount === 0) {
+          await pool.query('ALTER SEQUENCE restaurants_id_seq RESTART WITH 1');
+      }
 
-    
-    restaurantData.push(restaurant);
-    return restaurant; 
+      // Insert the new restaurant
+      const result = await pool.query(
+          'INSERT INTO restaurants (name, phone, address, photo) VALUES ($1, $2, $3, $4) RETURNING *',
+          [newRestaurant.name, newRestaurant.phone, newRestaurant.address, newRestaurant.photo]
+      );
+
+      return result.rows[0]; // Return the newly created restaurant
+  } catch (error) {
+      console.error('Error creating restaurant:', error);
+      throw new Error('Failed to create restaurant');
+  }
 };
+  
 
 
 // Delete a restaurant by id
-const deleteRestaurant = (id) => {
-    const restaurantId = Number(id); 
+const deleteRestaurant = async (id) => {
+    const query = 'DELETE FROM restaurants WHERE id = $1 RETURNING *';
+    try {
+        const result = await pool.query(query, [id]);
 
-    
-    const index = restaurantData.findIndex(restaurant => restaurant.id === restaurantId);
-
-    
-    if (index === -1) {
-        return { message: 'Restaurant not found', success: false };
+        if (result.rowCount > 0) {
+            return { success: true };  // Restaurant deleted successfully
+        } else {
+            return { success: false, message: 'Restaurant not found' };  // No restaurant found with this id
+        }
+    } catch (error) {
+        console.error('Error deleting restaurant from DB:', error);
+        throw error;
     }
-
-    
-    restaurantData.splice(index, 1);
-    
-    return { message: 'Restaurant deleted successfully', success: true, restaurantData };
 };
 
 export { getRestaurants, getRestaurant, createRestaurant, deleteRestaurant };

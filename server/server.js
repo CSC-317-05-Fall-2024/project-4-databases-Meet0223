@@ -29,23 +29,34 @@ app.get('/attractions', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'attractions.html'));
 });
 
-app.get('/restaurants', (req, res) => {
-    const restaurants = getRestaurants(); 
-    res.render('restaurants', { restaurantData: restaurants });  
-});
+app.get('/restaurants', async (req, res) => {
+    try {
+      const restaurants = await getRestaurants();  // Fetch the array of restaurants from the DB
+      res.render('restaurants', { restaurantData: restaurants });  // Pass the data to EJS
+    } catch (error) {
+      console.error('Error fetching restaurants:', error);
+      res.status(500).send('Something went wrong!');
+    }
+  });
 
 app.get('/new-restaurant', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'new-restaurants.html'));  
 });
 
-app.get('/restaurants/:id', (req, res) => {
-    const restaurantId = req.params.id;  
-    const restaurant = getRestaurant(restaurantId); 
-    
-    if (restaurant) {
-        res.render('restaurant-details', { restaurant });  
-    } else {
-        res.status(404).send('Restaurant not found');
+app.get('/restaurants/:id', async (req, res) => {
+    const restaurantId = req.params.id;
+
+    try {
+        const restaurant = await getRestaurant(restaurantId); // Await the result of the async function
+
+        if (restaurant) {
+            res.render('restaurant-details', { restaurant });
+        } else {
+            res.status(404).send('Restaurant not found');
+        }
+    } catch (error) {
+        console.error('Error fetching restaurant:', error);
+        res.status(500).send('Internal server error');
     }
 });
 
