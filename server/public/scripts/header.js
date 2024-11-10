@@ -5,7 +5,7 @@ needed to populate the header, nav, and footer elements
 function createHeader(pageTitle) {
     const headerHTML = `
         <h3 id="Top_Text">Traveler / ${pageTitle} Page</h3>
-        <img id="banner" src="images/Yosemite Banner.png" alt="Yosemite Banner">
+        <img id="banner" src="/images/Yosemite Banner.png" alt="Yosemite Banner">
     `;
     document.getElementById('header').innerHTML = headerHTML;
 }

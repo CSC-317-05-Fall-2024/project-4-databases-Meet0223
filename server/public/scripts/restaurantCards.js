@@ -19,7 +19,7 @@ async function deleteRestaurantCard(event) {
 
             if (response.ok) {
                 console.log(`Restaurant with ID ${restaurantId} deleted successfully.`);
-                card.remove();  // Remove the card from the DOM
+                card.remove();  
             } else {
                 console.error('Failed to delete restaurant:', response.statusText);
             }

@@ -1,30 +1,53 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-	<title>Travel Guide</title>
-    <link rel="stylesheet" href="/styles.css"/>
-    <link rel="stylesheet" href="/restaurant-details-styles.css"/>
-    <link rel="icon" type="image/png" href="images/icon.svg">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Details</title>
+    <link rel="icon" href="Images/icon.svg" type="image/svg">
+    <link rel="stylesheet" href="/Styles/restaurant-details.css">
 </head>
-
 <body>
-    <header></header>
-    <nav></nav>
-        <div class="restaurant-details">
-            <img class="restaurant-details-img" src="<%= restaurant.photo %>">
-            <div>
-                <h1><%= restaurant.name %></h1>
-                <h2><%= restaurant.address %></h2>
-                <h2><%= restaurant.phone %></h2>
-            </div>
+    <!-- Header Section -->
+    <header id='header'></header>
+
+    <!-- Navigation Section -->
+    <nav id="navbar"></nav>
+
+    <div class="restaurant-details">
+        <img class="restaurant-details-img" src="<%= restaurant.photo %>">
+        <div>
+            <h1><%= restaurant.name %></h1>
+            <h2><%= restaurant.address %></h2>
+            <h2><%= restaurant.phone %></h2>
         </div>
+    </div>
 
+    <!-- Reviews Section -->
+    <div class="reviews-section">
+        <h3>Customer Reviews</h3>
+        <% if (reviews && reviews.length > 0) { %>
+            <% reviews.forEach(review => { %>
+                <div class="review-card">
+                    <p><strong>Rating:</strong> <%= review.rating %> / 5</p>
+                    <p><%= review.content %></p>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>No reviews yet. Be the first to review this restaurant!</p>
+        <% } %>
+    </div>
 
-    <footer></footer>
-    <script src="/scripts/header.js"></script>
+    <!-- Footer Section -->
+    <footer id="footer"></footer>
+
+    <script src="/scripts/header.js" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            createHeader('Restaurant Details');  
+            createNav();
+            createFoot();
+        });
+    </script>
 </body>
-
 </html>

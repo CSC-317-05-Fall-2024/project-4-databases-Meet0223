@@ -19,15 +19,17 @@
     <main>
         <section class="restaurants-list">
             <% restaurantData.forEach(restaurant => { %>
-                <div class="restaurant-card" data-id="<%= restaurant.id %>">
-                    <img src="<%= restaurant.photo %>" alt="Restaurant Photo">
-                    <div class="restaurant-info">
-                        <h2><%= restaurant.name %></h2>
-                        <p>Phone: <%= restaurant.phone %></p>
-                        <p>Address: <%= restaurant.address %></p>
-                        <button class="delete-btn">Delete</button> 
+                <a href="/restaurants/<%= restaurant.id %>" class="restaurant-link">
+                    <div class="restaurant-card" data-id="<%= restaurant.id %>">
+                        <img src="<%= restaurant.photo %>" alt="Restaurant Photo">
+                        <div class="restaurant-info">
+                            <h2><%= restaurant.name %></h2>
+                            <p>Phone: <%= restaurant.phone %></p>
+                            <p>Address: <%= restaurant.address %></p>
+                            <button class="delete-btn">Delete</button> 
+                        </div>
                     </div>
-                </div>
+                </a>
             <% }) %>
         </section>
     </main>

@@ -5,7 +5,7 @@ import { pool } from '../config/database.js';
 const getRestaurants = async () => {
     try {
       const result = await pool.query('SELECT * FROM restaurants');
-      return result.rows;  // Return the list of restaurants
+      return result.rows;  
     } catch (error) {
       console.error('Error getting restaurants:', error);
       throw new Error('Failed to retrieve restaurants');
@@ -17,7 +17,7 @@ const getRestaurants = async () => {
 const getRestaurant = async (id) => {
   try {
       const result = await pool.query('SELECT * FROM restaurants WHERE id = $1', [id]);
-      return result.rows[0]; // Return the restaurant if found, else undefined
+      return result.rows[0]; 
       
   } catch (error) {
       console.error('Error getting restaurant:', error);
@@ -28,21 +28,20 @@ const getRestaurant = async (id) => {
 // Create a new restaurant entry
 const createRestaurant = async (newRestaurant) => {
   try {
-      // Check if there are any rows in the table
+      
       const { rowCount } = await pool.query('SELECT 1 FROM restaurants LIMIT 1');
 
-      // If no rows, reset the sequence
+      
       if (rowCount === 0) {
           await pool.query('ALTER SEQUENCE restaurants_id_seq RESTART WITH 1');
       }
 
-      // Insert the new restaurant
       const result = await pool.query(
           'INSERT INTO restaurants (name, phone, address, photo) VALUES ($1, $2, $3, $4) RETURNING *',
           [newRestaurant.name, newRestaurant.phone, newRestaurant.address, newRestaurant.photo]
       );
 
-      return result.rows[0]; // Return the newly created restaurant
+      return result.rows[0]; 
   } catch (error) {
       console.error('Error creating restaurant:', error);
       throw new Error('Failed to create restaurant');
@@ -58,9 +57,9 @@ const deleteRestaurant = async (id) => {
         const result = await pool.query(query, [id]);
 
         if (result.rowCount > 0) {
-            return { success: true };  // Restaurant deleted successfully
+            return { success: true };  
         } else {
-            return { success: false, message: 'Restaurant not found' };  // No restaurant found with this id
+            return { success: false, message: 'Restaurant not found' };  
         }
     } catch (error) {
         console.error('Error deleting restaurant from DB:', error);
@@ -68,4 +67,18 @@ const deleteRestaurant = async (id) => {
     }
 };
 
-export { getRestaurants, getRestaurant, createRestaurant, deleteRestaurant };
+// Get reviews for a specific restaurant
+const getReviewsForRestaurant = async (id) => {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM reviews WHERE restaurant_id = $1`,
+            [id]
+        );
+        return result.rows;
+    } catch (error) {
+        console.error('Error getting reviews:', error);
+        throw new Error('Failed to retrieve reviews');
+    }
+};
+
+export { getRestaurants, getRestaurant, createRestaurant, deleteRestaurant, getReviewsForRestaurant };

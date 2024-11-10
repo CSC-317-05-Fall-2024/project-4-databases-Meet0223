@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getRestaurants, getRestaurant } from './data/restaurants.js';
+import { getRestaurants, getRestaurant, getReviewsForRestaurant } from './data/restaurants.js';
 import { backendRouter } from './routes/api.js';
 //import restaurantDataObj from './data/restaurants.js';
 //const restaurantData = restaurantDataObj.restaurantData;
@@ -31,8 +31,8 @@ app.get('/attractions', (req, res) => {
 
 app.get('/restaurants', async (req, res) => {
     try {
-      const restaurants = await getRestaurants();  // Fetch the array of restaurants from the DB
-      res.render('restaurants', { restaurantData: restaurants });  // Pass the data to EJS
+      const restaurants = await getRestaurants();  
+      res.render('restaurants', { restaurantData: restaurants });  
     } catch (error) {
       console.error('Error fetching restaurants:', error);
       res.status(500).send('Something went wrong!');
@@ -47,16 +47,17 @@ app.get('/restaurants/:id', async (req, res) => {
     const restaurantId = req.params.id;
 
     try {
-        const restaurant = await getRestaurant(restaurantId); // Await the result of the async function
+        const restaurant = await getRestaurant(restaurantId);
+        const reviews = await getReviewsForRestaurant(restaurantId);
 
         if (restaurant) {
-            res.render('restaurant-details', { restaurant });
+            res.render('restaurant-details', { restaurant, reviews }); 
         } else {
             res.status(404).send('Restaurant not found');
         }
     } catch (error) {
-        console.error('Error fetching restaurant:', error);
-        res.status(500).send('Internal server error');
+        console.error('Error fetching restaurant details:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
